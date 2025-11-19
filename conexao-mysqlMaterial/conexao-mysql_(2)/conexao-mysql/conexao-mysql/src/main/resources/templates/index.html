@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro MySQL </title>
+    <style>
+        :root {
+        /* Definição de Cores Limpas */
+        --primary-color: #007bff; /* Azul padrão */
+        --secondary-color: #495057; /* Texto e detalhes */
+        --background-color: #f8f9fa; /* Fundo principal muito claro */
+        --container-bg: #fff;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --border-color: #dee2e6;
+        --table-header-bg: #e9ecef;
+    }
+
+    body {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Fonte limpa e padrão */
+        background-color: var(--background-color);
+        color: var(--secondary-color);
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        padding-top: 40px;
+        min-height: 100vh;
+    }
+
+    .container {
+        background-color: var(--container-bg);
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+        width: 100%;
+        max-width: 900px;
+        margin-bottom: 40px;
+    }
+
+    /* --- Títulos e Linha Divisória --- */
+
+    h2 {
+        color: var(--primary-color);
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 10px;
+        margin-top: 25px;
+        margin-bottom: 20px;
+        font-size: 1.5em;
+        font-weight: 500;
+    }
+
+    hr {
+        border: none;
+        border-top: 1px solid var(--border-color);
+        margin: 25px 0;
+    }
+
+    /* --- Formulários (Cadastro e Busca) --- */
+
+    form div {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+    }
+
+    label {
+        margin-right: 15px;
+        font-weight: 600; /* Levemente mais ousado */
+        color: #343a40;
+        min-width: 80px;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+        flex-grow: 1;
+        padding: 10px;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 1em;
+        transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+    }
+
+    /* --- Botões e Links --- */
+
+    button {
+        background-color: var(--success-color);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1em;
+        font-weight: bold;
+        transition: background-color 0.2s, transform 0.1s;
+    }
+
+    button:hover {
+        background-color: #218838;
+    }
+    button:active {
+        transform: translateY(1px);
+    }
+
+
+    /* Estilo específico para busca e link limpar */
+    #busca-form button {
+        background-color: var(--primary-color);
+        margin-left: 10px;
+    }
+    #busca-form button:hover {
+        background-color: #0056b3;
+    }
+
+    .link-limpar {
+        margin-left: 15px;
+        color: var(--secondary-color);
+        text-decoration: underline;
+        opacity: 0.8;
+    }
+    .link-limpar:hover {
+        opacity: 1;
+    }
+
+    /* --- Tabela de Usuários --- */
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: #fff;
+    }
+
+    thead th {
+        background-color: var(--table-header-bg);
+        color: var(--secondary-color);
+        padding: 12px;
+        text-align: left;
+        border: 1px solid var(--border-color);
+    }
+
+    tbody td {
+        padding: 10px;
+        border: 1px solid var(--border-color);
+        vertical-align: middle;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #f2f2f2; /* Zebra Striping */
+    }
+    tbody tr:hover {
+        background-color: #e9f5ff; /* Destaque ao passar o mouse */
+    }
+
+    /* --- Links de Ações na Tabela --- */
+
+    .link-editar,
+    .link-excluir {
+        text-decoration: none;
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 0.9em;
+        margin-right: 5px;
+        display: inline-block;
+        transition: background-color 0.2s, color 0.2s;
+    }
+
+    .link-editar {
+        color: #fff;
+        background-color: var(--primary-color);
+    }
+    .link-editar:hover {
+        background-color: #0056b3;
+    }
+
+    .link-excluir {
+        color: #fff;
+        background-color: var(--danger-color);
+    }
+    .link-excluir:hover {
+        background-color: #c82333;
+    }
+
+    /* --- Mensagem de Tabela Vazia --- */
+
+    .empty-message {
+        text-align: center;
+        font-style: italic;
+        padding: 20px !important;
+        background-color: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeeba;
+    }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2><span style="color: #444;">//</span> Cadastrar Novo Usuário</h2>
+    <form action="/salvar" method="POST">
+        <div>
+            <label>Nome:</label>
+            <input type="text" name="nome" required placeholder="Digite o nome do usuário">
+        </div>
+        <div>
+            <label>Email:</label>
+            <input type="email" name="email" required placeholder="Digite o email">
+        </div>
+        <div>
+            <label></label>
+            <button type="submit">Salvar Dados</button>
+        </div>
+    </form>
+
+    <hr>
+
+    <h2><span style="color: #444;">//</span> Buscar Usuário</h2>
+    <form action="/" method="GET" id="busca-form">
+        <div>
+            <label>Nome:</label>
+            <input type="text" name="nome" th:value="${nomeBusca}" placeholder="Pesquisar por nome...">
+            <button type="submit">Buscar</button>
+            <a href="/" th:if="${nomeBusca != null and !nomeBusca.isEmpty()}" class="link-limpar">[x] Limpar</a>
+        </div>
+    </form>
+
+    <hr>
+
+    <h2><span style="color: #444;">//</span> Usuários Cadastrados</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${usuarios}">
+            <td th:text="${user.id}">1</td>
+            <td th:text="${user.nome}">Nome Exemplo</td>
+            <td th:text="${user.email}">exemplo@mail.com</td>
+            <td>
+                <a th:href="@{/editar/{id}(id=${user.id})}" class="link-editar">Editar</a>
+                <a th:href="@{/excluir/{id}(id=${user.id})}"
+                   onclick="return confirm('Tem certeza que deseja excluir este usuário? [Ação Irreversível]');"
+                   class="link-excluir">Excluir</a>
+            </td>
+        </tr>
+        <tr th:if="${usuarios.empty}">
+            <td colspan="4" class="empty-message">
+                <span style="color: var(--danger-color);">//</span> Nenhum registro de usuário encontrado no sistema.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

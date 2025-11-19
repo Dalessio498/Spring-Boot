@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro de produtos MySQL</title>
+</head>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: rgb(242, 245, 247);
+    font-family: system-ui, -apple-system;
+    padding: 0;
+    margin: 0;
+  }
+
+  .Caixa {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  h2 {
+    text-align: center;
+  }
+
+  .form div {
+    margin-bottom: 15px;
+
+  }
+
+  label{
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #444;
+    text-align: center;
+  }
+
+  input[type="text"],
+  input[type="number"] {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s
+  }
+
+  input[type="text"]:focus,
+  input[type="number"]:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+button {
+  display: block;
+  width: 100%;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 30px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+hr {
+  margin: 30px 0;
+  border: none;
+  height: 1px;
+  background-color: #ddd;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+thead {
+  background-color: #007bff;
+  color: #fff;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+tbody tr:hover {
+  background-color: #f1f5ff;
+}
+
+</style>
+
+<body>
+<div class="Caixa">
+  <h2>Cadastrar Novo Produto</h2>
+  <form action="/produtos/salvar" method="POST">
+
+    <div>
+      <label>Nome:</label>
+      <input type="text" name="nome" required>
+    </div>
+
+    <div>
+      <label>Preço:</label>
+      <input type="number" name="preco" step="0.01" required>
+    </div>
+
+    <div>
+      <label>Estoque:</label>
+      <input type="number" name="estoque" required>
+    </div>
+
+    <button type="submit">Salvar</button>
+  </form>
+  <hr>
+  <h2>Usuários Cadastrados</h2>
+  <table border="1" width="100%">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nome</th>
+      <th>Preço</th>
+      <th>Estoque</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr th:each="prod : ${produtos}">
+      <td th:text="${prod.id}">1</td>
+      <td th:text="${prod.nome}">Nome Padrão</td>
+      <td th:text="${prod.preco}">1</td>
+      <td th:text="${prod.estoque}">1</td>
+    </tr>
+
+    </tbody>
+  </table>
+</div>
+</body>
+
+</html>
